@@ -41,7 +41,7 @@
         <dependenciesDirectory>libs</dependenciesDirectory>
         <kubernetesSecretName>${project.artifactId}</kubernetesSecretName>
         <spotbugs.exclude>${project.basedir}/src/main/spotbugs/exclusions.xml</spotbugs.exclude>
-        <narayana.lra.version>5.9.8.Final-helidon</narayana.lra.version>
+        <narayana.lra.version>5.9.8.Final</narayana.lra.version>
     </properties>
     <build>
         <resources>
@@ -136,41 +136,43 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>2.5.1</version>
-                <executions>
-                    <execution>
-                        <id>install-lra-client-jar</id>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                        <phase>validate</phase>
-                        <configuration>
-                            <groupId>org.jboss.narayana.rts</groupId>
-                            <artifactId>lra-client</artifactId>
-                            <version>${narayana.lra.version}</version>
-                            <packaging>jar</packaging>
-                            <file>${basedir}/dependencies/lra-client-${narayana.lra.version}.jar</file>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>install-narayana-lra-jar</id>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                        <phase>validate</phase>
-                        <configuration>
-                            <groupId>org.jboss.narayana.rts</groupId>
-                            <artifactId>narayana-lra</artifactId>
-                            <version>${narayana.lra.version}</version>
-                            <packaging>jar</packaging>
-                            <file>${basedir}/dependencies/narayana-lra-${narayana.lra.version}.jar</file>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-install-plugin</artifactId>-->
+                <!--<version>2.5.1</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>install-lra-client-jar</id>-->
+                        <!--<goals>-->
+                            <!--<goal>install-file</goal>-->
+                        <!--</goals>-->
+                        <!--<phase>validate</phase>-->
+                        <!--<configuration>-->
+                            <!--<groupId>org.jboss.narayana.rts</groupId>-->
+                            <!--<artifactId>lra-client</artifactId>-->
+                            <!--<version>${narayana.lra.version}</version>-->
+                            <!--<packaging>jar</packaging>-->
+                            <!--<file>${basedir}/dependencies/lra-client-${narayana.lra.version}.jar</file>-->
+                            <!--<pomFile>${basedir}/dependencies/lra-client-${narayana.lra.version}.pom</pomFile>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                    <!--<execution>-->
+                        <!--<id>install-narayana-lra-jar</id>-->
+                        <!--<goals>-->
+                            <!--<goal>install-file</goal>-->
+                        <!--</goals>-->
+                        <!--<phase>validate</phase>-->
+                        <!--<configuration>-->
+                            <!--<groupId>org.jboss.narayana.rts</groupId>-->
+                            <!--<artifactId>narayana-lra</artifactId>-->
+                            <!--<version>${narayana.lra.version}</version>-->
+                            <!--<packaging>jar</packaging>-->
+                            <!--<file>${basedir}/dependencies/narayana-lra-${narayana.lra.version}.jar</file>-->
+                            <!--<pomFile>${basedir}/dependencies/narayana-lra-${narayana.lra.version}.pom</pomFile>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
         </plugins>
     </build>
 
