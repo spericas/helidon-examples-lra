@@ -1,5 +1,7 @@
 package io.helidon.examples.lra;
 
+import io.narayana.lra.filter.ClientLRARequestFilter;
+import io.narayana.lra.filter.ClientLRAResponseFilter;
 import io.narayana.lra.filter.FilterRegistration;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -12,14 +14,12 @@ import java.util.Set;
 @ApplicationPath("/")
 public class OrderApplication extends Application {
 
-    public OrderApplication() {
-        System.out.println("OrderApplication (includes io.narayana.lra.filter.FilterRegistration)");
-    }
-
     @Override
     public Set<Class<?>> getClasses() {
-        Set<Class<?>> s = new HashSet<Class<?>>();
+        Set<Class<?>> s = new HashSet<>();
         s.add(FilterRegistration.class);
+        s.add(ClientLRARequestFilter.class);
+        s.add(ClientLRAResponseFilter.class);
         s.add(OrderResource.class);
         return s;
     }

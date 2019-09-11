@@ -18,8 +18,8 @@ package io.helidon.examples.lra;
 import java.net.URI;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -34,14 +34,9 @@ import static org.eclipse.microprofile.lra.annotation.ws.rs.LRA.LRA_HTTP_PARENT_
 @ApplicationScoped
 public class OrderResource {
 
-
+    private Client client = ClientBuilder.newBuilder().build();
     private ParticipantStatus participantStatus;
     private String orderStatus = "none";
-
-    @Inject
-    public OrderResource() {
-        super();
-    }
 
     @Path("/placeOrder")
     @GET
@@ -51,20 +46,26 @@ public class OrderResource {
         System.out.println("OrderResource.placeOrder in LRA due to LRA.Type.REQUIRES_NEW lraId:" + lraId);
         participantStatus = ParticipantStatus.Active;
         orderStatus = "pending";
-        Response response = ClientBuilder.newBuilder().build().target("http://localhost:8091/inventory/reserveInventoryForOrder")
+        Response response = client.target("http://localhost:8091/inventory/reserveInventoryForOrder")
                 .request().header(LRA_HTTP_CONTEXT_HEADER, lraId).get();
         String entity = response.readEntity(String.class);
         System.out.println("OrderResource.placeOrder response from inventory:" + entity);
-        if (entity.equals("inventorysuccess")) {
-            orderStatus = "completed";
-            return Response.ok()
-                    .entity("orderStatus:" + orderStatus)
-                    .build();
-        } else {
-            orderStatus = "failed";
-            return Response.serverError()
-                    .entity("orderStatus:" + orderStatus)
-                    .build();
+        switch (entity) {
+            case "inventorysuccess":
+                orderStatus = "completed";
+                return Response.ok()
+                        .entity("orderStatus:" + orderStatus)
+                        .build();
+            case "inventoryfailure":
+                orderStatus = "failed";
+                return Response.serverError()
+                        .entity("orderStatus:" + orderStatus)
+                        .build();
+            default:
+                orderStatus = "unknown";
+                return Response.serverError()
+                        .entity("orderStatus:" + orderStatus)
+                        .build();
         }
     }
 
@@ -74,7 +75,7 @@ public class OrderResource {
     @Compensate
     public Response cancelOrder(@HeaderParam(LRA_HTTP_CONTEXT_HEADER) String lraId) throws NotFoundException {
         participantStatus = ParticipantStatus.Compensating;
-        System.out.println("OrderResource.cancelOrder");
+        System.out.println("OrderResource.cancelOrder lraId:" + lraId);
         orderStatus = "cancelled";
         participantStatus = ParticipantStatus.Compensated;
         return Response.ok().entity(participantStatus.name()).build();
@@ -86,7 +87,7 @@ public class OrderResource {
     @Complete
     public Response completeOrder(@HeaderParam(LRA_HTTP_CONTEXT_HEADER) String lraId) throws NotFoundException {
         participantStatus = ParticipantStatus.Completing;
-        System.out.println("OrderResource.completeOrder");
+        System.out.println("OrderResource.completeOrder lraId:" + lraId);
         participantStatus = ParticipantStatus.Completed;
         return Response.ok().entity(participantStatus.name()).build();
     }

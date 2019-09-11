@@ -23,7 +23,7 @@ Inventory Service:
 - call to reserveInventoryForOrder by order service is executed within LRA started and propagated by order service due to @LRA Mandatory annotation and registers service with the LRA coordinator
 - calls inventory service to check and returns the result (success or fail) to the inventory service.
 
-To build:
+To build*:
 - ./build.sh
 
 To run 

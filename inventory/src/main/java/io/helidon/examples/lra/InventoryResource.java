@@ -18,7 +18,6 @@ package io.helidon.examples.lra;
 import java.net.URI;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -37,20 +36,14 @@ public class InventoryResource {
     private ParticipantStatus participantStatus;
     private int inventoryCount = 1; //0 or 1, either have one or don't
 
-    @Inject
-    public InventoryResource() {
-        super();
-    }
-
     @Path("/reserveInventoryForOrder")
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    @LRA(value = LRA.Type.MANDATORY, end = false) // todo LRA_HTTP_CONTEXT_HEADER
+    @LRA(value = LRA.Type.MANDATORY, end = false)
     public Response reserveInventoryForOrder(@HeaderParam(LRA_HTTP_CONTEXT_HEADER) String lraId)  {
         boolean inventoryExists = inventoryCount > 0;
         System.out.println("InventoryResource.placeOrder in LRA due to LRA.Type.MANDATORY " +
-                "lraID:" + lraId +
-                "inventoryExists:" + inventoryExists);
+                "inventoryExists:" + inventoryExists + "lraID:" + lraId);
         participantStatus = ParticipantStatus.Active;
         if(inventoryExists) return Response.ok()
                 .entity("inventorysuccess")
@@ -66,7 +59,7 @@ public class InventoryResource {
     @Compensate
     public Response cancelOrder(@HeaderParam(LRA_HTTP_CONTEXT_HEADER) String lraId) throws NotFoundException {
         participantStatus = ParticipantStatus.Compensating;
-        System.out.println("InventoryResource.cancelOrder put inventory back lraId:" + lraId);
+        System.out.println("InventoryResource.cancelOrder put inventory back if any lraId:" + lraId);
         participantStatus = ParticipantStatus.Compensated;
         return Response.status(Response.Status.OK).entity(participantStatus.name()).build();
     }
@@ -88,8 +81,7 @@ public class InventoryResource {
     public Response status(@HeaderParam(LRA_HTTP_CONTEXT_HEADER) URI lraId,
                            @HeaderParam(LRA_HTTP_PARENT_CONTEXT_HEADER) URI parent) {
         System.out.println("InventoryResource.status participantStatus:" + participantStatus + " lraId:" + lraId);
-        Response.Status endPhaseStatus = Response.Status.OK; //todo
-        return Response.status(endPhaseStatus).entity(participantStatus).build();
+        return Response.ok().entity(participantStatus).build();
     }
 
     @GET
