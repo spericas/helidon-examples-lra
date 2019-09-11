@@ -35,6 +35,42 @@ For success/complete case ...
 - curl http://localhost:8091/inventory/addInventory
 - curl http://localhost:8090/order/placeOrder 
 
+You should see the following output in the Order Service...
+```
+OrderResource.placeOrder in LRA due to LRA.Type.REQUIRES_NEW lraId:[...]
+
+OrderResource.placeOrder response from inventory:inventorysuccess
+
+OrderResource.completeOrder
+```
+
+And the following output in the Inventory Service...
+```
+InventoryResource.addInventory
+
+InventoryResource.placeOrder in LRA due to LRA.Type.MANDATORY lraID:[...]
+
+InventoryResource.completeOrder prepare item for shipping lraId:[...]
+```
+
 For failure/compensate case...
 - curl http://localhost:8091/inventory/removeInventory
 - curl http://localhost:8090/order/placeOrder 
+
+You should see the following output in the Order service...
+```
+OrderResource.placeOrder in LRA due to LRA.Type.REQUIRES_NEW lraId:[...]
+
+OrderResource.placeOrder response from inventory:inventoryfailure
+
+OrderResource.cancelOrder
+```
+
+And the following output in the Inventory Service...
+```
+InventoryResource.removeInventory
+
+InventoryResource.placeOrder in LRA due to LRA.Type.MANDATORY lraID:[...]
+
+InventoryResource.cancelOrder put inventory back lraId:[...]
+```

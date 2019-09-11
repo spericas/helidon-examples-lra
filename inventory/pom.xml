@@ -41,7 +41,6 @@
         <dependenciesDirectory>libs</dependenciesDirectory>
         <kubernetesSecretName>${project.artifactId}</kubernetesSecretName>
         <spotbugs.exclude>${project.basedir}/src/main/spotbugs/exclusions.xml</spotbugs.exclude>
-        <docker.image.prefix>docker.io/paulparkinson</docker.image.prefix>
         <narayana.lra.version>5.9.8.Final-helidon</narayana.lra.version>
     </properties>
     <build>
@@ -52,27 +51,6 @@
             </resource>
         </resources>
         <plugins>
-
-            <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>0.4.11</version>
-                <configuration>
-                    <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
-                    <baseImage>java</baseImage>
-                    <entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
-                    <resources>
-                        <resource>
-                            <targetPath>/</targetPath>
-                            <directory>${project.build.directory}</directory>
-                        </resource>
-                    </resources>
-                    <imageTags>
-                        <imageTag>0.1</imageTag>
-                    </imageTags>
-                </configuration>
-            </plugin>
-
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
@@ -146,7 +124,6 @@
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.jboss.narayana.rts</groupId>
                 <artifactId>lra-annotation-checker-maven-plugin</artifactId>
@@ -158,46 +135,44 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>  <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-install-plugin</artifactId>
-            <version>2.5.1</version>
-            <executions>
-                <execution>
-                    <id>install-lra-client-jar</id>
-                    <goals>
-                        <goal>install-file</goal>
-                    </goals>
-                    <phase>validate</phase>
-                    <configuration>
-                        <groupId>org.jboss.narayana.rts</groupId>
-                        <artifactId>lra-client</artifactId>
-                        <version>${narayana.lra.version}</version>
-                        <packaging>jar</packaging>
-                        <file>${basedir}/dependencies/lra-client-${narayana.lra.version}.jar</file>
-                        <generatePom>true</generatePom>
-                    </configuration>
-                </execution>
-                <execution>
-                    <id>install-narayana-lra-jar</id>
-                    <goals>
-                        <goal>install-file</goal>
-                    </goals>
-                    <phase>validate</phase>
-                    <configuration>
-                        <groupId>org.jboss.narayana.rts</groupId>
-                        <artifactId>narayana-lra</artifactId>
-                        <version>${narayana.lra.version}</version>
-                        <packaging>jar</packaging>
-                        <file>${basedir}/dependencies/narayana-lra-${narayana.lra.version}.jar</file>
-                        <generatePom>true</generatePom>
-                    </configuration>
-                </execution>
-            </executions>
-        </plugin>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5.1</version>
+                <executions>
+                    <execution>
+                        <id>install-lra-client-jar</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <groupId>org.jboss.narayana.rts</groupId>
+                            <artifactId>lra-client</artifactId>
+                            <version>${narayana.lra.version}</version>
+                            <packaging>jar</packaging>
+                            <file>${basedir}/dependencies/lra-client-${narayana.lra.version}.jar</file>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>install-narayana-lra-jar</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <groupId>org.jboss.narayana.rts</groupId>
+                            <artifactId>narayana-lra</artifactId>
+                            <version>${narayana.lra.version}</version>
+                            <packaging>jar</packaging>
+                            <file>${basedir}/dependencies/narayana-lra-${narayana.lra.version}.jar</file>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
 
     <dependencyManagement>
         <dependencies>
@@ -251,8 +226,3 @@
     </dependencies>
 
 </project>
-
-
-
-
-
